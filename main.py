@@ -15,9 +15,11 @@ quit:  Quit the program
 
 
 def user_menu_input():
-    user_input = int(input("Please choose a number 1-4\n"
-                           "To exit choose 4 or quit()\n"
-                           "Input: "))
+    user_input = input("What operation would you like to preform:\n"
+                       "list: List all products in store\n"
+                       "total: Show total amount in store\n"
+                       "order: Make an order\n"
+                       "quit:  Quit the program")
     return user_input
 
 
