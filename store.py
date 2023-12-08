@@ -1,4 +1,3 @@
-
 class Store:
     def __init__(self, product_list):
         self.list_of_products = product_list
