@@ -76,3 +76,4 @@ store = Store([bose, mac])
 
 pixel = Product("Google Pixel 7", price=500, quantity=250)
 store.add_product(pixel)
+store.get_total_quantity()
