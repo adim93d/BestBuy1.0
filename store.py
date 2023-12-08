@@ -24,10 +24,11 @@ class Store:
         active_products = []
         for item in self.list_of_products:
             if item.is_active():
-                active_products.append(item.name)
+                active_products.append(item)
         return active_products
 
-    def order(self, shopping_list) -> float:
+    @staticmethod
+    def order(shopping_list) -> float:
         name = 0
         quantity = 1
         total_price_counter = 0
