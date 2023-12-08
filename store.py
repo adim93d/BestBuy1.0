@@ -20,6 +20,20 @@ class Store:
         print(f'Total of {counter} in the inventory')
         return counter
 
+    def get_all_products(self):
+        active_products = []
+        for item in self.list_of_products:
+            if item.is_active():
+                active_products.append(item.name)
+        return active_products
+
+    def order(self, shopping_list) -> float:
+        name = 0
+        quantity = 1
+        total_price_counter = 0
+        for item in shopping_list:
+            total_price_counter += item[name].buy(item[quantity])
+        return total_price_counter
 
 
 
