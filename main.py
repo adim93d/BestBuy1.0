@@ -3,31 +3,47 @@ import store
 
 
 def menu_input():
-    user_input = input("\n"
-                       """Store Menu
+    user_input = int(input("\n"
+                           """Store Menu
 ----------
 1. List all products in store
 2. Show total amount in store
 3. Make an order
 4. Quit
-----------\nWhat would you like to do: """)
+----------\nWhat would you like to do: """))
     return user_input
 
 
 def menu_dispatch_table(user_input, shop):
-    functions_dispatcher = {1: list_products(shop),
-                            4: quit}
-    return functions_dispatcher[user_input]
+    functions_dispatcher = {1: list_products,
+                            2: show_total_amount,
+                            }
+    if user_input in functions_dispatcher:
+        return functions_dispatcher[user_input](shop)
+    else:
+        print("Invalid input. Try again.")
+        return menu_dispatch_table(menu_input(), shop)
 
 
 def list_products(shop):
     shop.get_all_products()
-    menu_dispatch_table(menu_input(), shop)
+    user_input = menu_input()
+    return menu_dispatch_table(user_input, shop)
+
+
+def show_total_amount(shop):
+    shop.get_total_quantity()
+    user_input = menu_input()
+    return menu_dispatch_table(user_input, shop)
 
 
 def start(shop):
     while True:
-        menu_dispatch_table(menu_input(), shop)
+        user_input = menu_input()
+        if user_input == "4":
+            break
+        else:
+            menu_dispatch_table(user_input, shop)
 
 
 def main():
