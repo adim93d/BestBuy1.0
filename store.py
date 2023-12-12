@@ -19,11 +19,16 @@ class Store:
         print(f'Total of {counter} in the inventory')
         return counter
 
-    def get_all_products(self):
+    def get_all_products(self) -> []:
+        """Shows all the Active Products is the Store"""
         active_products = []
+        item_index = 1
+        print()
         for item in self.list_of_products:
-            if item.is_active():
+            if item.is_active:
                 active_products.append(item)
+                print(f"{item_index}. {item.show()}")
+                item_index += 1
         return active_products
 
     @staticmethod

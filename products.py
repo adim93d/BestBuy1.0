@@ -31,7 +31,7 @@ class Product:
             print(f"Wrong input, Please enter Integer")
 
     def show(self):
-        print(f'{self.name}, Price: {self.price}, Quantity: {self.quantity}')
+        return f'Name: {self.name}, Price: {self.price}, Quantity: {self.quantity}'
 
     def buy(self, quantity):
         inventory = self.quantity

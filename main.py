@@ -3,28 +3,31 @@ import store
 
 
 def menu_input():
-    user_input = input("What would you like to do?\n"
+    user_input = input("\n"
                        """Store Menu
 ----------
 1. List all products in store
 2. Show total amount in store
 3. Make an order
 4. Quit
-----------""")
+----------\nWhat would you like to do: """)
+    return user_input
 
 
-def dispatch_table(input, store):
-    functions = {
-        1: print(store.Store.get_all_products()),
-        2: print(store.Store.get_total_quantity()),
-        3: store.Store.order(),
-        4: quit()
-    }
+def menu_dispatch_table(user_input, shop):
+    functions_dispatcher = {1: list_products(shop),
+                            4: quit}
+    return functions_dispatcher[user_input]
 
 
-def start(store):
+def list_products(shop):
+    shop.get_all_products()
+    menu_dispatch_table(menu_input(), shop)
+
+
+def start(shop):
     while True:
-        dispatch_table(menu_input(), store)
+        menu_dispatch_table(menu_input(), shop)
 
 
 def main():
@@ -33,10 +36,8 @@ def main():
                     products.Product("Google Pixel 7", price=500, quantity=250),
                     ]
 
-    store1 = store.Store(product_list)
-    products1 = store1.get_all_products()
-    print(store1.get_total_quantity())
-    print(store1.order([(products1[0], 1), (products1[1], 2)]))
+    best_buy = store.Store(product_list)
+    start(best_buy)
 
 
 if __name__ == '__main__':
