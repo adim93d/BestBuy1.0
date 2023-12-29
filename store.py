@@ -39,8 +39,8 @@ class Store:
             print("2. Remove from Cart")
             print("3. View Cart")
             print("4. Checkout")
-            print("5. Continue Shopping")
-            print("6. Quit")
+            print("5. Continue ordering")
+            print("6. Quit to main menu")
 
             try:
                 choice = int(input("Choose an action (1-6): "))
@@ -66,19 +66,25 @@ class Store:
 
     def add_to_cart(self):
         self.get_all_products()
+
         try:
             user_product_input = int(input("Choose a product index number: "))
         except ValueError:
             print("Wrong input type, please enter an integer.")
             return
 
+        # Check if the index is valid
+        if not (1 <= user_product_input <= len(self.list_of_products)):
+            print("Invalid product index. Please choose a valid index.")
+            return
+
+        product = self.list_of_products[user_product_input - 1]
+
         try:
             user_quantity_input = int(input("Choose a quantity to add: "))
         except ValueError:
             print("Wrong input type, please enter an integer.")
             return
-
-        product = self.list_of_products[user_product_input - 1]
 
         if product.is_active() and product.quantity >= user_quantity_input:
             item_price = product.price * user_quantity_input
