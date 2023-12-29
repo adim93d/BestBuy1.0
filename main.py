@@ -16,7 +16,8 @@ def menu_input():
 
 def menu_dispatch_table(user_input, shop):
     functions_dispatcher = {1: list_products,
-                            2: show_total_amount,
+                            2: show_inventory_quantity,
+                            3: order
                             }
     if user_input in functions_dispatcher:
         return functions_dispatcher[user_input](shop)
@@ -31,8 +32,14 @@ def list_products(shop):
     return menu_dispatch_table(user_input, shop)
 
 
-def show_total_amount(shop):
+def show_inventory_quantity(shop):
     shop.get_total_quantity()
+    user_input = menu_input()
+    return menu_dispatch_table(user_input, shop)
+
+
+def order(shop):
+    shop.order2()
     user_input = menu_input()
     return menu_dispatch_table(user_input, shop)
 
@@ -40,7 +47,8 @@ def show_total_amount(shop):
 def start(shop):
     while True:
         user_input = menu_input()
-        if user_input == "4":
+        if user_input == 4:
+            print("Goodbye!")
             break
         else:
             menu_dispatch_table(user_input, shop)

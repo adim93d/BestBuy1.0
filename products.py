@@ -1,9 +1,13 @@
 class Product:
     def __init__(self, name: str, price: int, quantity: int):
+        self.index = None
         self.name = name
         self.price = price
         self.quantity = quantity
         self.active = True
+
+    def set_index(self, index):
+        self.index = index
 
     def deactivate(self):
         self.active = False
@@ -24,9 +28,10 @@ class Product:
             self.quantity += quantity
             if self.quantity <= 0:
                 self.deactivate()
+                print('No inventory, Deactivating product')
             else:
                 self.activate()
-            print(f"Added {quantity} units to total amount of {self.quantity}")
+                print('Inventory updated')
         except TypeError:
             print(f"Wrong input, Please enter Integer")
 
