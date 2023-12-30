@@ -1,19 +1,55 @@
+class Promotion:
+    def __init__(self, name):
+        self.name = name
+
+    def apply_promotion(self, product, quantity):
+        raise NotImplementedError("Subclasses must implement apply_promotion method")
+
+
+class PercentDiscount(Promotion):
+    def __init__(self, name, percent):
+        super().__init__(name)
+        self.percent = percent
+
+    def apply_promotion(self, product, quantity):
+        discounted_price = product.price * (1 - self.percent / 100)
+        return discounted_price * quantity
+
+
+class SecondHalfPrice(Promotion):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def apply_promotion(self, product, quantity):
+        full_price_items = quantity // 2
+        half_price_items = quantity - full_price_items
+        discounted_price = (full_price_items * product.price + half_price_items * (product.price / 2))
+        return discounted_price
+
+
+class ThirdOneFree(Promotion):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def apply_promotion(self, product, quantity):
+        full_price_items = quantity // 3 * 2
+        free_items = quantity - full_price_items
+        discounted_price = full_price_items * product.price
+        return discounted_price
+
+
 class InvalidProductDetails(Exception):
     pass
 
 
 class Product:
     def __init__(self, name: str, price: int, quantity: int):
-        try:
-            self.validate_product_details(name, price)
-        except InvalidProductDetails as e:
-            print(f"Error: {e}")
-
         self.index = None
         self.name = name
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None  # Default: No promotion
 
     def validate_product_details(self, name, price):
         if not name or price < 0:
@@ -48,8 +84,21 @@ class Product:
         except TypeError:
             print(f"Wrong input, Please enter Integer")
 
+    def set_promotion(self, promotion):
+        self.promotion = promotion
+
+    def remove_promotion(self):
+        self.promotion = None
+
+    def apply_promotion(self, quantity):
+        if self.promotion:
+            return self.promotion.apply_promotion(self, quantity)
+        else:
+            return self.price * quantity
+
     def show(self):
-        return f'Name: {self.name}, Price: {self.price}, Quantity: {self.quantity}'
+        promotion_info = f', Promotion: {self.promotion.name}' if self.promotion else ''
+        return f'Name: {self.name}, Price: {self.price}, Quantity: {self.quantity}{promotion_info}'
 
     def buy(self, quantity):
         inventory = self.quantity
@@ -58,7 +107,7 @@ class Product:
                 self.quantity -= quantity
                 if self.quantity <= 0:
                     self.deactivate()
-                return self.price * quantity
+                return self.apply_promotion(quantity)
             else:
                 return 'Error, Unable to complete the purchase'
         except TypeError as e:
