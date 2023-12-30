@@ -31,10 +31,7 @@ class Store:
         for item in self.list_of_products:
             if item.is_active():
                 active_products.append(item)
-                if isinstance(item, products.NonStockedProduct):  # Check if the item is a NonStockedProduct
-                    print(f"{item_index}. {item.show()}")
-                else:
-                    print(f"{item_index}. {item.show()}")
+                print(f"{item_index}. {item.show()}")
                 item_index += 1
         return active_products
 
@@ -92,15 +89,18 @@ class Store:
             print("Wrong input type, please enter an integer.")
             return
 
-        if product.is_active() and product.quantity >= user_quantity_input:
-            item_price = product.price * user_quantity_input
-            self.cart.append({"product": product, "quantity": user_quantity_input, "total_price": item_price})
-            product.set_quantity(-user_quantity_input)  # Adjust product quantity
-            print(f"{user_quantity_input} {product.name}(s) added to the cart.")
-        elif not product.is_active():
+        if not product.is_active():
             print("Product is not active. Cannot add to the cart.")
+        elif isinstance(product, products.LimitedProduct) and user_quantity_input > product.max_quantity:
+            print(f"Error: Quantity exceeds the maximum allowed ({product.max_quantity}).")
         else:
-            print("Insufficient inventory. Please choose a lower quantity.")
+            try:
+                item_price = product.price * user_quantity_input
+                self.cart.append({"product": product, "quantity": user_quantity_input, "total_price": item_price})
+                product.set_quantity(-user_quantity_input)  # Adjust product quantity
+                print(f"{user_quantity_input} {product.name}(s) added to the cart.")
+            except ValueError as e:
+                print(f"Error: {e}")
 
     def remove_from_cart(self):
         self.view_cart()
@@ -146,9 +146,11 @@ class Store:
         print(f"Total Purchase Price: ${total_purchase_price}")
 
         self.clean_up_cart()  # Remove items with zero quantity and update index
+        self.cart = []  # Clear the cart after checkout
         print("Thank you for your purchase!\n")
 
     def clean_up_cart(self):
         self.cart = [item for item in self.cart if item['product'].is_active()]
         for i, item in enumerate(self.cart, start=1):
             item['product'].set_index(i)  # Update index number for active products
+

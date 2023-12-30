@@ -66,11 +66,18 @@ class Product:
 
 
 class NonStockedProduct(Product):
-    def __init__(self, name: str, price: int, quantity: str):
-        super().__init__(name, price, quantity='Unlimited (Non-Stocked)')
+    def __init__(self, name: str, price: int):
+        super().__init__(name, price, quantity=0)  # Set quantity to 0 for non-stocked products
 
     def show(self):
-        return f'Name: {self.name}, Price: {self.price}, Quantity: {self.quantity}'
+        return f'Name: {self.name}, Price: {self.price}, Quantity: Unlimited (Non-Stocked)'
+
+    def is_active(self) -> bool:
+        return True  # Non-stocked products are always considered active
+
+    def set_quantity(self, quantity: int):
+        # NonStockedProduct should not deactivate or update quantity
+        pass
 
 
 class LimitedProduct(Product):
