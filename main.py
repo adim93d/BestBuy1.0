@@ -64,6 +64,7 @@ def main():
 
     best_buy = store.Store(product_list)
     start(best_buy)
+    """Promotions edit"""
 
 
 if __name__ == '__main__':
