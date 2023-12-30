@@ -1,3 +1,6 @@
+import products
+
+
 class Store:
     def __init__(self, product_list):
         self.list_of_products = product_list
@@ -21,14 +24,17 @@ class Store:
         return counter
 
     def get_all_products(self) -> []:
-        """Shows all the Active Products is the Store"""
+        """Shows all the Active Products in the Store"""
         active_products = []
         item_index = 1
         print()
         for item in self.list_of_products:
             if item.is_active():
                 active_products.append(item)
-                print(f"{item_index}. {item.show()}")
+                if isinstance(item, products.NonStockedProduct):  # Check if the item is a NonStockedProduct
+                    print(f"{item_index}. {item.show()}")
+                else:
+                    print(f"{item_index}. {item.show()}")
                 item_index += 1
         return active_products
 
