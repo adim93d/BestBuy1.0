@@ -1,3 +1,4 @@
+
 class Promotion:
     def __init__(self, name):
         self.name = name
@@ -119,7 +120,8 @@ class NonStockedProduct(Product):
         super().__init__(name, price, quantity=0)  # Set quantity to 0 for non-stocked products
 
     def show(self):
-        return f'Name: {self.name}, Price: {self.price}, Quantity: Unlimited (Non-Stocked)'
+        promotion_info = f', Promotion: {self.promotion.name}' if self.promotion else ''
+        return f'Name: {self.name}, Price: {self.price}, Quantity: Unlimited (Non-Stocked){promotion_info}'
 
     def is_active(self) -> bool:
         return True  # Non-stocked products are always considered active

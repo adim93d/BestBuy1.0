@@ -95,7 +95,7 @@ class Store:
             print(f"Error: Quantity exceeds the maximum allowed ({product.max_quantity}).")
         else:
             try:
-                item_price = product.price * user_quantity_input
+                item_price = product.apply_promotion(user_quantity_input)
                 self.cart.append({"product": product, "quantity": user_quantity_input, "total_price": item_price})
                 product.set_quantity(-user_quantity_input)  # Adjust product quantity
                 print(f"{user_quantity_input} {product.name}(s) added to the cart.")
@@ -137,13 +137,23 @@ class Store:
     def checkout(self):
         self.view_cart()
         print("\nCheckout:")
+        total_purchase_price_before_promotion = sum(item['total_price'] for item in self.cart)
+        print(f"Total Purchase Price before promotion: ${total_purchase_price_before_promotion}")
+
+        # Apply promotions before calculating the total purchase price
         for item in self.cart:
             product = item['product']
             if product.is_active():
-                product.set_quantity(-item['quantity'])  # Deduct quantity from active products
+                item['total_price'] = product.apply_promotion(item['quantity'])
 
-        total_purchase_price = sum(item['total_price'] for item in self.cart)
-        print(f"Total Purchase Price: ${total_purchase_price}")
+        total_purchase_price_after_promotion = sum(item['total_price'] for item in self.cart)
+        print(f"Total Purchase Price after promotion: ${total_purchase_price_after_promotion}")
+
+        # Deduct quantity from active products
+        for item in self.cart:
+            product = item['product']
+            if product.is_active():
+                product.set_quantity(-item['quantity'])
 
         self.clean_up_cart()  # Remove items with zero quantity and update index
         self.cart = []  # Clear the cart after checkout
