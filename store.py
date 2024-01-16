@@ -24,7 +24,6 @@ class Store:
         return counter
 
     def get_all_products(self) -> []:
-        """Shows all the Active Products in the Store"""
         active_products = []
         item_index = 1
         print()
@@ -76,7 +75,6 @@ class Store:
             print("Wrong input type, please enter an integer.")
             return
 
-        # Check if the index is valid
         if not (1 <= user_product_input <= len(self.list_of_products)):
             print("Invalid product index. Please choose a valid index.")
             return
@@ -97,7 +95,7 @@ class Store:
             try:
                 item_price = product.apply_promotion(user_quantity_input)
                 self.cart.append({"product": product, "quantity": user_quantity_input, "total_price": item_price})
-                product.set_quantity(-user_quantity_input)  # Adjust product quantity
+                product.set_quantity(-user_quantity_input)
                 print(f"{user_quantity_input} {product.name}(s) added to the cart.")
             except ValueError as e:
                 print(f"Error: {e}")
@@ -113,7 +111,7 @@ class Store:
         if 1 <= index <= len(self.cart):
             removed_item = self.cart.pop(index - 1)
             product = removed_item['product']
-            product.set_quantity(removed_item['quantity'])  # Restore product quantity
+            product.set_quantity(removed_item['quantity'])
             print(f"{removed_item['quantity']} {product.name}(s) removed from the cart.")
         else:
             print("Invalid item index. Please choose a valid index.")
@@ -137,30 +135,26 @@ class Store:
     def checkout(self):
         self.view_cart()
         print("\nCheckout:")
-        total_purchase_price_before_promotion = sum(item['total_price'] for item in self.cart)
-        print(f"Total Purchase Price before promotion: ${total_purchase_price_before_promotion}")
 
-        # Apply promotions before calculating the total purchase price
-        for item in self.cart:
-            product = item['product']
-            if product.is_active():
-                item['total_price'] = product.apply_promotion(item['quantity'])
-
+        total_purchase_price_before_promotion = sum(item['product'].price * item['quantity'] for item in self.cart)
         total_purchase_price_after_promotion = sum(item['total_price'] for item in self.cart)
+
+        print(f"Total Purchase Price before promotion: ${total_purchase_price_before_promotion}")
         print(f"Total Purchase Price after promotion: ${total_purchase_price_after_promotion}")
 
-        # Deduct quantity from active products
+        amount_saved = total_purchase_price_before_promotion - total_purchase_price_after_promotion
+        print(f"Amount Saved: ${amount_saved}")
+
         for item in self.cart:
             product = item['product']
             if product.is_active():
                 product.set_quantity(-item['quantity'])
 
-        self.clean_up_cart()  # Remove items with zero quantity and update index
-        self.cart = []  # Clear the cart after checkout
+        self.clean_up_cart()
+        self.cart = []
         print("Thank you for your purchase!\n")
 
     def clean_up_cart(self):
         self.cart = [item for item in self.cart if item['product'].is_active()]
         for i, item in enumerate(self.cart, start=1):
-            item['product'].set_index(i)  # Update index number for active products
-
+            item['product'].set_index(i)
