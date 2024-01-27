@@ -148,10 +148,9 @@ class Store:
         for item in self.cart:
             product = item['product']
             if product.is_active():
-                product.set_quantity(-item['quantity'])
+                product.set_quantity(-item['quantity'])  # Subtract purchased quantity from the product
 
         self.clean_up_cart()
-        self.cart = []
         print("Thank you for your purchase!\n")
 
     def clean_up_cart(self):

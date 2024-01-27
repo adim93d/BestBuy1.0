@@ -70,18 +70,28 @@ class Product:
 
     def set_quantity(self, quantity: int):
         try:
-            if self.quantity + quantity <= 0:
-                self.quantity = 0  # Set quantity to 0 instead of deactivating
+            if self.promotion:
+                # Adjust the quantity based on the promotion
+                adjusted_quantity = quantity - abs(quantity)  # Adjusted quantity considering the promotion
+                quantity_adjusted = int(self.promotion.apply_promotion(self, adjusted_quantity))
+                new_quantity = self.quantity + quantity_adjusted
             else:
+                new_quantity = self.quantity + quantity
+
+            if new_quantity < 0:
+                raise ValueError("Cannot set negative quantity.")
+
+            if new_quantity <= 0:
+                self.quantity = 0  # Set quantity to 0 if it becomes negative or zero
+                self.deactivate()
+            else:
+                self.quantity = new_quantity  # Update quantity
                 self.activate()
 
-            if self.promotion:
-                quantity = int(self.promotion.apply_promotion(self, quantity / abs(quantity)))
-
-            self.quantity += quantity
+            print('Inventory updated')
 
         except TypeError:
-            print(f"Wrong input, Please enter Integer")
+            print(f"Wrong input, please enter an integer")
 
     def set_promotion(self, promotion):
         self.promotion = promotion
