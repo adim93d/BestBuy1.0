@@ -157,4 +157,6 @@ class Store:
     def clean_up_cart(self):
         self.cart = [item for item in self.cart if item['product'].is_active()]
         for i, item in enumerate(self.cart, start=1):
-            item['product'].set_index(i)
+            product = item['product']
+            if hasattr(product, 'set_index'):
+                product.set_index(i)

@@ -71,7 +71,7 @@ class Product:
     def set_quantity(self, quantity: int):
         try:
             if self.quantity + quantity <= 0:
-                self.deactivate()  # Move the deactivate call to this point
+                self.quantity = 0  # Set quantity to 0 instead of deactivating
             else:
                 self.activate()
 
